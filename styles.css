@@ -94,8 +94,9 @@ h2 { font-size: 28px; line-height: 1.2; letter-spacing: -.012em; margin: 0 0 6px
 /* Mini bar chart (Bank Distress card) */
 .mini-bars { padding: 18px 18px 15px; font-size: 13px; }
 .mb-title { font-family: var(--serif); font-size: 15px; font-weight: 500; margin-bottom: 13px; color: var(--ink); }
-.mb-row { display: grid; grid-template-columns: 118px 1fr 34px; align-items: center; gap: 10px; margin-bottom: 9px; }
+.mb-row { display: grid; grid-template-columns: 132px 1fr 40px; align-items: center; gap: 10px; margin-bottom: 10px; }
 .mb-row span { color: var(--ink-2); line-height: 1.25; }
+.mb-row span small { display: block; color: var(--muted); font-size: 11.5px; line-height: 1.3; margin-top: 2px; }
 .mb-row i { display: block; height: 14px; background: var(--accent); border-radius: 0 3px 3px 0; }
 .mb-row i.off { background: var(--baseline); }
 .mb-row b { font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; }

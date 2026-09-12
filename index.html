@@ -49,7 +49,7 @@
       <section id="work">
         <div class="sec-head">
           <h2>Selected work</h2>
-          <p class="sub">Three research projects, each with a public repository. Each one lists the data behind it and which parts are public.</p>
+          <p class="sub">Four research projects. Each one lists the data behind it and which parts are public; three have a public repository.</p>
         </div>
 
         <article class="project">
@@ -91,6 +91,29 @@
             </dl>
             <p class="tags"><span>Public data</span><span>Longitudinal panel</span><span>Hospital finance</span><span>pandas</span></p>
             <p class="actions"><a class="primary" href="projects/rural-hospitals.html">Read the project page</a><a href="https://github.com/Twyla123/Rural-Hospitals-Project" target="_blank" rel="noopener">Code on GitHub</a></p>
+          </div>
+        </article>
+
+        <article class="project">
+          <div class="figure">
+            <div class="mini-bars" role="img" aria-label="Total variation distance against the survey distributions, lower is better: best fine-tuned configuration 0.241, uniform guess 0.308, sequential Pew pre-training 0.489.">
+              <div class="mb-title">Distance from the real answer distribution</div>
+              <div class="mb-row"><span>Best configuration<small>fine-tuned on the survey</small></span><i style="width:33%"></i><b>0.241</b></div>
+              <div class="mb-row"><span>Uniform guess<small>the baseline to beat</small></span><i class="off" style="width:42%"></i><b>0.308</b></div>
+              <div class="mb-row"><span>Pew pre-training<small>worse than guessing</small></span><i class="off" style="width:66%"></i><b>0.489</b></div>
+              <div class="mb-note">Total variation distance on held-out questions, lower is better</div>
+            </div>
+          </div>
+          <div class="body">
+            <p class="kicker">Research · Columbia DiTecT Lab, under Prof. Xuan Sharon Di · Jan – May 2026 · Python</p>
+            <h3>Predicting Survey Response Distributions with LLMs, NYC Congestion Pricing</h3>
+            <dl class="pa">
+              <div><dt>Question</dt><dd>Surveys are slow and expensive, and they under-cover small groups. Can a language model predict the <em>distribution</em> of answers a demographic group would give, closely enough to be useful before a survey is run?</dd></div>
+              <div><dt>What I did</dt><dd>Built the inference and fine-tuning pipeline for Llama-3.1-8B and Qwen2.5-7B: answer-option token log-probabilities read in a single forward pass, normalized into a predicted distribution, then LoRA fine-tuned against the empirical distributions with soft-target cross-entropy. Ground truth is the 2022 NYC Citywide Mobility Survey, 23 questions across 17 demographic subgroups of age, gender, income, borough and race. Scored with total variation distance for nominal questions and Wasserstein distance for ordinal ones, against a random-guess baseline and a bootstrapped best-achievable floor.</dd></div>
+              <div><dt>Result</dt><dd>Across 18 configurations, three prompt formats by three training setups, the best reached 0.241 against 0.308 for a uniform guess on held-out questions. Pre-training on Pew data first made it worse than guessing (0.489 to 0.736), which is the more useful finding: borrowed survey data does not transfer here.</dd></div>
+              <div><dt>Code</dt><dd>Lab project, not public.</dd></div>
+            </dl>
+            <p class="tags"><span>LLM fine-tuning</span><span>LoRA</span><span>Survey methodology</span><span>Evaluation design</span></p>
           </div>
         </article>
 
