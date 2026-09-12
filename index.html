@@ -3,107 +3,157 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Xinxin Zhang - Digital Portfolio</title>
+    <title>Xinxin Zhang · Portfolio</title>
+    <meta name="description" content="Xinxin (Twyla) Zhang: M.S. Data Science, Columbia (Dec 2026); B.A. Economics and Data Science, USC. Research on bank distress, AI and wages, and rural hospital finance." />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header>
-      <nav>
-        <h1>Xinxin Zhang</h1>
-        <ul>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#web-dev">Web Development</a></li>
-        </ul>
-      </nav>
-    </header>
+    <div class="top">
+      <div class="top-inner">
+        <a class="home" href="index.html">Xinxin Zhang</a>
+        <nav>
+          <a href="#work">Selected work</a>
+          <a href="#experience">Experience</a>
+          <a href="#coursework">Coursework</a>
+          <a href="https://github.com/Twyla123" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+      </div>
+    </div>
+
     <main>
-<div class="about-me">
-  <h2>About Me</h2>
-  <p>
-    I’m Xinxin Zhang, a graduate student in Data Science at Columbia University
-    and a recent Economics and Data Science graduate from the University of
-    Southern California. My research focuses on applying data science to
-    understand real-world economic and social issues, using programming and
-    analytics to uncover meaningful patterns behind policy and technology. I’ve
-    conducted research on topics such as artificial intelligence and
-    labor-market inequality, financial stability, and rural healthcare systems.
-    Across all my projects, I focus on transforming complex datasets into clear,
-    actionable insights. I’m passionate about applying data science to address
-    social and economic challenges and developing transparent, data-driven
-    solutions that make a meaningful impact.
-  </p>
-</div>
-      <section id="projects">
-        <h2>Featured Projects</h2>
-        <div class="card">
-          <h3>Revenue Trends in Rural Hospitals</h3>
-          <p>Analysis of revenue trends in rural hospitals over time.</p>
-          <a
-            href="https://github.com/Twyla123/Revenue-Trends-in-Rural-Hospitals/tree/main"
-            target="_blank"
-            >View on GitHub</a
-          >
+      <header class="intro">
+        <h1>Xinxin (Twyla) Zhang</h1>
+        <p class="lede">I build data that other people can rely on: resolving messy regulatory and market sources into one clean panel, checking every number against its filing, and saying plainly what a result does and does not support. M.S. in Data Science at Columbia (December 2026), after a double B.A. in Economics and Data Science at USC.</p>
+        <div class="links">
+          <a href="mailto:xz2843@columbia.edu">xz2843@columbia.edu</a>
+          <a href="https://linkedin.com/in/twyla-zhang" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/Twyla123" target="_blank" rel="noopener">GitHub</a>
         </div>
-        <div class="card">
-          <h3>Honors Thesis Project</h3>
-          <p>Wage Polarization and AI: Honors Thesis Project</p>
-          <a
-            href="https://github.com/Twyla123/Honors_Thesis_Project"
-            target="_blank"
-            >View on GitHub</a
-          >
+        <dl class="facts">
+          <div><dt>Tools</dt><dd>Python (pandas, statsmodels, scikit-learn), SQL, R, Stata; Snowflake, Streamlit, Git</dd></div>
+          <div><dt>Data I have worked with</dt><dd>Bank regulatory filings (Call Reports, FR Y-9C, FDIC, HMDA), BLS and O*NET labor data, California hospital financial data, survey and e-receipt panels</dd></div>
+        </dl>
+      </header>
+
+      <section id="work">
+        <div class="sec-head">
+          <h2>Selected work</h2>
+          <p class="sub">Three research projects, each with a public repository. Each one lists the data behind it and which parts are public.</p>
         </div>
-        <div class="card">
-          <h3>Bank Distress Research</h3>
-          <p>Research on financial distress in banking institutions.</p>
-          <a
-            href="https://github.com/Twyla123/Bank-Distress-Research"
-            target="_blank"
-            >View on GitHub</a
-          >
-        </div>
-        <div class="card">
-          <h3>Evite-Inspired Objected-Oriented Programming Project</h3>
-          <p>
-            Used Java to develop an event management program with inheritance
-            hierarchies, file-based data management, and a menu interface.
-          </p>
-          <a
-            href="https://github.com/Twyla123/Final_Project_OOP"
-            target="_blank"
-            >View on GitHub</a
-          >
-        </div>
+
+        <article class="project">
+          <div class="figure">
+            <div class="mini-bars" role="img" aria-label="Of 413 lender IDs: 242 matched at holding-company level, 15 at bank level, 3 at subsidiary level, 81 via the credit-union roster, 72 unresolved.">
+              <div class="mb-title">Where 413 lender IDs ended up</div>
+              <div class="mb-row"><span>Holding company</span><i style="width:100%"></i><b>242</b></div>
+              <div class="mb-row"><span>Credit union</span><i style="width:33.5%"></i><b>81</b></div>
+              <div class="mb-row"><span>Unresolved</span><i class="off" style="width:29.8%"></i><b>72</b></div>
+              <div class="mb-row"><span>Bank, own parent</span><i style="width:6.2%"></i><b>15</b></div>
+              <div class="mb-row"><span>Subsidiary, walked up</span><i style="width:1.2%"></i><b>3</b></div>
+              <div class="mb-note">Source: LOC_Matching_All.csv in the repository</div>
+            </div>
+          </div>
+          <div class="body">
+            <p class="kicker">Research assistantship · USC Economics · Apr 2024 – Jun 2025 · Python</p>
+            <h3>Evaluating Bank Distress from Regulatory and Market Data</h3>
+            <dl class="pa">
+              <div><dt>Question</dt><dd>Does a bank's funding structure predict distress? Part of the data layer for a study since published as <em>Beyond Hot Money</em> (Dagher and Fuster, 2026).</dd></div>
+              <div><dt>What I did</dt><dd>Resolved ten U.S. banking datasets that each name a bank differently to one identity per institution, rolled subsidiary financials up the ownership tree, and checked the totals against FDIC data and 10-K filings.</dd></div>
+              <div><dt>Result</dt><dd>341 of 413 lender IDs matched (72 listed as unresolved rather than forced); 12 years of HMDA records aligned across the 2018 reporting break; a DealScan check that flagged 441 of 28,568 deals (1.54%) for a recording gap that would have overstated time variation.</dd></div>
+            </dl>
+            <p class="tags"><span>Entity resolution</span><span>Regulatory data</span><span>pandas</span><span>Data validation</span></p>
+            <p class="actions"><a class="primary" href="projects/bank-distress.html">Read the project page</a><a href="https://github.com/Twyla123/Bank-Distress-Research" target="_blank" rel="noopener">Code on GitHub</a></p>
+          </div>
+        </article>
+
+        <article class="project">
+          <div class="figure">
+            <img src="assets/rural_outpatient_trend.png" alt="Line chart: outpatient share of gross patient revenue for California general acute hospitals, 1995 to 2023. Rural hospitals rise from 43% to 68%; teaching and all other hospitals rise from about 27% to 40%." loading="lazy" />
+          </div>
+          <div class="body">
+            <p class="kicker">Research with Prof. Glenn Melnick · USC · 2024 – 2025 · Python and Excel</p>
+            <h3>Revenue Trends in Rural Hospitals, California, 1995–2023</h3>
+            <dl class="pa">
+              <div><dt>Question</dt><dd>How has the financial position of California's rural hospitals changed over three decades, and what are they living on now?</dd></div>
+              <div><dt>What I did</dt><dd>Built a 29-year panel (1995–2023) of general acute hospitals from the public HCAI annual financial files; one script rebuilds it and writes every headline figure with the rule that produces it.</dd></div>
+              <div><dt>Result</dt><dd>Among rural hospitals the outpatient share of gross patient revenue rose from 43% to 68%, the count fell from 79 to 58, and the share classified as Disproportionate Share Hospitals rose from 19% to 48%.</dd></div>
+            </dl>
+            <p class="tags"><span>Public data</span><span>Longitudinal panel</span><span>Hospital finance</span><span>pandas</span></p>
+            <p class="actions"><a class="primary" href="https://github.com/Twyla123/Rural-Hospitals-Project" target="_blank" rel="noopener">Code on GitHub</a></p>
+          </div>
+        </article>
+
+        <article class="project">
+          <div class="figure">
+            <div class="placeholder">
+              <div class="ph-big">2015–2024</div>
+              <div class="ph-small">OEWS wages for about 680 detailed occupations, merged with O*NET automation and Job Zone scores</div>
+              <div class="ph-foot">Figures will be posted with the 2026 revision</div>
+            </div>
+          </div>
+          <div class="body">
+            <p class="kicker">Honors thesis · USC Economics · May 2025 · Python</p>
+            <h3>Wage Polarization and AI: Empirical Evidence from U.S. Labor Market Data</h3>
+            <dl class="pa">
+              <div><dt>Question</dt><dd>Is AI exposure associated with higher wages, and does the gain reach lower-skill occupations?</dd></div>
+              <div><dt>What I did</dt><dd>Built a BLS–O*NET occupation panel for 2015–2024 and estimated the association with OLS, quantile regression and difference-in-differences, plus a descriptive look at gender, race and skill level. All sources public: BLS OEWS and CPS, O*NET, BLS CPI-U, Census SOC crosswalks.</dd></div>
+              <div><dt>Status</dt><dd>Submitted May 2025 and kept as submitted. A 2026 revision with updated data and a revised design is in progress; its results will be posted here with a note on what changed.</dd></div>
+            </dl>
+            <p class="tags"><span>Labor economics</span><span>Panel regression</span><span>statsmodels</span></p>
+            <p class="actions"><a class="primary" href="https://github.com/Twyla123/Honors_Thesis_Project" target="_blank" rel="noopener">Code on GitHub</a></p>
+          </div>
+        </article>
       </section>
-      <section id="web-dev">
-        <h2>Web Development Projects</h2>
-        <div class="card">
-          <h3>HTML/CSS Projects</h3>
-          <p>
-            Explore creative web development designs and layouts using HTML and
-            CSS.
-          </p>
-          <a
-            href="https://uscwebdev.github.io/itp104-submissions-Twyla123/"
-            target="_blank"
-            >View Projects</a
-          >
+
+      <section id="experience">
+        <div class="sec-head">
+          <h2>Experience</h2>
+          <p class="sub">Internship work belongs to the employers, so only the roles are listed; the résumé carries the detail.</p>
         </div>
-        <div class="card">
-          <h3>JavaScript Projects</h3>
-          <p>
-            Interactive web applications and scripts written with JavaScript.
-          </p>
-          <a
-            href="https://uscwebdev.github.io/itp301-submissions-Twyla123/"
-            target="_blank"
-            >View Projects</a
-          >
+        <ul class="exp">
+          <li>
+            <span class="role">Data Science Intern <span class="org">· System Two, New York</span></span>
+            <span class="when">June – August 2026</span>
+            <span class="scope">Alternative data for investment research: subscriber and conversion modelling on an e-receipt panel, a per-ticker research pipeline, LLM-based storefront classification, dashboard consolidation.</span>
+          </li>
+          <li>
+            <span class="role">Quantitative Research Intern <span class="org">· Ipsos, Shanghai</span></span>
+            <span class="when">June – August 2025</span>
+            <span class="scope">Survey analytics for brand-health and customer-satisfaction studies: NPS/NSS, driver analysis, competitive benchmarking, desk research across six markets.</span>
+          </li>
+          <li>
+            <span class="role">Data Analytics Intern, Consumer Insights <span class="org">· Marc Point, Shanghai</span></span>
+            <span class="when">June – August 2024</span>
+            <span class="scope">Consumer-review analytics: taxonomies over millions of reviews, cross-tabulation and trend analysis in SQL and FineBI.</span>
+          </li>
+        </ul>
+      </section>
+
+      <section id="coursework">
+        <div class="sec-head">
+          <h2>Coursework</h2>
+          <p class="sub">Class projects, kept for the record.</p>
+        </div>
+        <div class="course">
+          <div class="item">
+            <h3>Evite-inspired event manager (Java)</h3>
+            <p>Object-oriented design with two inheritance hierarchies, file-based persistence and a console menu. USC ITP 265.</p>
+            <a href="https://github.com/Twyla123/Final_Project_OOP" target="_blank" rel="noopener">View on GitHub</a>
+          </div>
+          <div class="item">
+            <h3>HTML/CSS projects (USC ITP 104)</h3>
+            <p>Layouts, forms, galleries and responsive pages built from scratch.</p>
+            <a href="https://uscwebdev.github.io/itp104-submissions-Twyla123/" target="_blank" rel="noopener">View projects</a>
+          </div>
+          <div class="item">
+            <h3>JavaScript projects (USC ITP 301)</h3>
+            <p>Interactive pages and small applications, including React components.</p>
+            <a href="https://uscwebdev.github.io/itp301-submissions-Twyla123/" target="_blank" rel="noopener">View projects</a>
+          </div>
         </div>
       </section>
     </main>
-    <footer>
-      <p>© 2024 Xinxin Zhang. All rights reserved.</p>
-    </footer>
+
+    <footer>© 2026 Xinxin Zhang · <a href="mailto:xz2843@columbia.edu">xz2843@columbia.edu</a> · <a href="https://github.com/Twyla123" target="_blank" rel="noopener">GitHub</a> · <a href="https://linkedin.com/in/twyla-zhang" target="_blank" rel="noopener">LinkedIn</a> · Updated September 2026</footer>
   </body>
 </html>

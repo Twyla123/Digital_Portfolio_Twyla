@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evaluating Bank Distress from Regulatory and Market Data · Xinxin Zhang</title>
+  <meta name="description" content="How ten U.S. banking datasets were resolved to one bank identity, cross-checked against filings, and tested for fixed-effects feasibility. Research assistantship, USC Economics, 2024–2025." />
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f9f9f7;
+      --surface: #fcfcfb;
+      --ink: #0b0b0b;
+      --ink-2: #52514e;
+      --muted: #898781;
+      --hairline: #e1e0d9;
+      --baseline: #c3c2b7;
+      --accent: #256abf;
+      --accent-soft: #cde2fb;
+      --code-bg: #f1f1ee;
+      --max: 760px;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Top bar */
+    .top {
+      border-bottom: 1px solid var(--hairline);
+      background: var(--surface);
+    }
+    .top-inner {
+      max-width: var(--max); margin: 0 auto; padding: 14px 20px;
+      display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+      font-size: 14px;
+    }
+    .top-inner .home { color: var(--ink); font-weight: 600; }
+    .top-inner .home span { color: var(--muted); font-weight: 400; }
+    .top-inner nav a { margin-left: 18px; color: var(--ink-2); }
+
+    main { max-width: var(--max); margin: 0 auto; padding: 44px 20px 80px; }
+
+    /* Title block */
+    .eyebrow { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+    h1 { font-size: 34px; line-height: 1.2; letter-spacing: -.015em; margin: 0 0 18px; font-weight: 700; }
+    .dek { font-size: 19px; line-height: 1.5; color: var(--ink-2); margin: 0 0 26px; }
+    .meta {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px 24px;
+      padding: 18px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline);
+      font-size: 14px;
+    }
+    .meta dt { color: var(--muted); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 2px; }
+    .meta dd { margin: 0; color: var(--ink); }
+
+    /* Stat tiles */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 30px 0 10px; }
+    .stat { background: var(--surface); border: 1px solid var(--hairline); border-radius: 8px; padding: 16px 16px 14px; }
+    .stat .v { font-size: 30px; font-weight: 600; line-height: 1.1; letter-spacing: -.01em; }
+    .stat .v small { font-size: 16px; font-weight: 500; color: var(--ink-2); }
+    .stat .l { font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+
+    /* Sections */
+    h2 { font-size: 22px; line-height: 1.3; letter-spacing: -.01em; margin: 52px 0 12px; font-weight: 700; }
+    h2 .n { color: var(--muted); font-weight: 500; margin-right: 10px; }
+    p { margin: 0 0 16px; }
+    .note { font-size: 14px; color: var(--ink-2); }
+    sup a { font-size: 11px; color: var(--muted); }
+
+    /* Tables */
+    .tbl-wrap { overflow-x: auto; margin: 18px 0 8px; }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    th, td { text-align: left; padding: 9px 12px 9px 0; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+    th { font-weight: 600; color: var(--ink-2); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; border-bottom: 1px solid var(--baseline); }
+    td.num { font-variant-numeric: tabular-nums; text-align: right; padding-right: 12px; white-space: nowrap; }
+    th.num { text-align: right; padding-right: 12px; }
+    .tag { display: inline-block; font-size: 12px; padding: 1px 7px; border-radius: 4px; border: 1px solid var(--hairline); color: var(--ink-2); white-space: nowrap; }
+    .tag.pub { border-color: #b7d3f6; color: #184f95; background: #eef5fd; }
+
+    /* Bar chart (HTML) */
+    figure { margin: 22px 0 10px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 8px; padding: 18px 18px 14px; }
+    figure .ft { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+    figure .fs { font-size: 13px; color: var(--muted); margin: 0 0 14px; }
+    .bars { display: grid; grid-template-columns: minmax(150px, 1.3fr) minmax(120px, 2fr) auto; gap: 10px 12px; align-items: center; font-size: 14px; }
+    .bars .lab { color: var(--ink); line-height: 1.3; }
+    .bars .lab small { display: block; color: var(--muted); font-size: 12px; }
+    .bars .track { height: 20px; position: relative; }
+    .bars .bar { position: absolute; left: 0; top: 0; height: 20px; background: var(--accent); border-radius: 0 4px 4px 0; }
+    .bars .bar.off { background: var(--baseline); }
+    .bars .val { font-variant-numeric: tabular-nums; color: var(--ink); min-width: 3ch; text-align: right; }
+    figcaption { font-size: 13px; color: var(--muted); margin-top: 12px; }
+
+    /* Code */
+    pre { background: var(--code-bg); border: 1px solid var(--hairline); border-radius: 8px; padding: 14px 16px; overflow-x: auto; font: 13px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace; margin: 14px 0 6px; }
+    code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .92em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+    pre code { background: none; padding: 0; font-size: inherit; }
+    .cap { font-size: 13px; color: var(--muted); margin: 0 0 16px; }
+
+    /* Callout */
+    .callout { border-left: 3px solid var(--accent); padding: 4px 0 4px 16px; margin: 20px 0; color: var(--ink-2); font-size: 15px; }
+
+    ul.tight { padding-left: 20px; margin: 0 0 16px; }
+    ul.tight li { margin-bottom: 8px; }
+
+    /* Sources */
+    .sources { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--baseline); font-size: 13px; color: var(--ink-2); }
+    .sources h2 { font-size: 15px; margin: 0 0 10px; }
+    .sources ol { padding-left: 20px; margin: 0; }
+    .sources li { margin-bottom: 6px; }
+    .sources code { word-break: break-all; }
+
+    footer { max-width: var(--max); margin: 0 auto; padding: 20px 20px 48px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--hairline); }
+
+    @media (max-width: 560px) {
+      h1 { font-size: 27px; }
+      .dek { font-size: 17px; }
+      .stat .v { font-size: 26px; }
+      .bars { grid-template-columns: 1fr; gap: 4px 0; }
+      .bars .track { margin-top: 4px; }
+      .bars .val { text-align: left; margin-bottom: 10px; }
+    }
+    @media print {
+      .top, footer { display: none; }
+      body { background: #fff; }
+      figure, .stat, pre { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="top-inner">
+      <a class="home" href="../index.html">Xinxin Zhang <span>· Portfolio</span></a>
+      <nav>
+        <a href="https://github.com/Twyla123/Bank-Distress-Research" target="_blank" rel="noopener">Code</a>
+        <a href="https://github.com/Twyla123" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/twyla-zhang" target="_blank" rel="noopener">LinkedIn</a>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <p class="eyebrow">Research · April 2024 – June 2025</p>
+    <h1>Evaluating Bank Distress from Regulatory and Market Data</h1>
+    <p class="dek">Built part of the data layer for a study of whether brokered deposits make bank funding less stable, since published as <em>Beyond Hot Money</em> (Dagher and Fuster, 2026). My job was to take ten U.S. banking datasets that each name a bank differently, resolve them to one identity per institution, and produce a panel clean enough to regress on.</p>
+
+    <dl class="meta">
+      <div><dt>Role</dt><dd>Research assistant to Prof. Jihad Dagher, Department of Economics, USC</dd></div>
+      <div><dt>Tools</dt><dd>Python (pandas, fuzzywuzzy, statsmodels); read R and Stata pipelines</dd></div>
+      <div><dt>Output feeds</dt><dd>Dagher &amp; Fuster (2026), SFI Research Paper 26-22. HMDA and DealScan work is a separate strand of the same project.</dd></div>
+      <div><dt>Code</dt><dd><a href="https://github.com/Twyla123/Bank-Distress-Research" target="_blank" rel="noopener">github.com/Twyla123/Bank-Distress-Research</a></dd></div>
+    </dl>
+
+    <div class="stats">
+      <div class="stat"><div class="v">10</div><div class="l">regulatory and market datasets joined</div></div>
+      <div class="stat"><div class="v">341 <small>of 413</small></div><div class="l">lenders matched to one holding company, bank or credit union; 72 left unresolved and listed<sup><a href="#s1">1</a></sup></div></div>
+      <div class="stat"><div class="v">12 <small>years</small></div><div class="l">of HMDA loan-level records standardized, 2012–2023<sup><a href="#s5">5</a></sup></div></div>
+      <div class="stat"><div class="v">1.54<small>%</small></div><div class="l">of DealScan deals with a recording gap (441 of 28,568)<sup><a href="#s6">6</a></sup></div></div>
+    </div>
+
+    <h2><span class="n">1</span>Ten sources, ten ways to name a bank</h2>
+    <p>Every source identifies an institution with its own key, at its own level of the ownership tree. The work was deciding, pair by pair, what “the same bank” means, and making each decision auditable: every match carries a tier label, every ambiguous case is written out for inspection, every filter has a verification pass that prints what survived.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Source</th><th>Identifier</th><th>What it contributed</th><th>Access</th></tr></thead>
+        <tbody>
+          <tr><td>FFIEC Call Reports</td><td>RSSD (bank)</td><td>Deposits by insurance status, HTM/AFS securities, tier-1 capital</td><td><span class="tag pub">Public</span></td></tr>
+          <tr><td>FR Y-9C</td><td>RSSD (holding company)</td><td>Consolidated holding-company financials</td><td><span class="tag pub">Public</span></td></tr>
+          <tr><td>NIC relationships &amp; transformations</td><td>Parent → offspring edges</td><td>Ownership tree; predecessor → successor pairs after mergers</td><td><span class="tag pub">Public</span></td></tr>
+          <tr><td>FDIC (bulk + BankFind API)</td><td>FDIC certificate</td><td>Deposits, insured deposits, assets</td><td><span class="tag pub">Public</span></td></tr>
+          <tr><td>NCUA credit-union call reports</td><td>CU number, RSSD</td><td>Credit-union assets and uninsured shares</td><td><span class="tag pub">Public</span></td></tr>
+          <tr><td>NY Fed CRSP–FRB link</td><td>PERMCO ↔ RSSD</td><td>Which banks are publicly traded</td><td><span class="tag pub">Public</span></td></tr>
+          <tr><td>HMDA (LAR, Transmittal Sheet, Panel)</td><td>Respondent ID, later LEI</td><td>Loan-level mortgage originations, 2011–2023</td><td><span class="tag pub">Public</span></td></tr>
+          <tr><td>SEC 10-K filings</td><td>Company name</td><td>Hand validation of constructed totals</td><td><span class="tag pub">Public</span></td></tr>
+          <tr><td>CRSP / Compustat (WRDS)</td><td>PERMCO, ticker</td><td>Stock returns</td><td><span class="tag">Licensed</span></td></tr>
+          <tr><td>Lines of credit</td><td>Top-holder RSSD</td><td>Lender credit limits, 2021–2023</td><td><span class="tag">Proprietary</span></td></tr>
+          <tr><td>LPC DealScan</td><td>Lender-parent ID</td><td>Syndicated loans at deal and tranche level</td><td><span class="tag">Licensed</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">The last three sources are licensed or proprietary, reached through WRDS and the research group's own access. Every figure quoted on this page from those sources is an aggregate.</p>
+
+    <h2><span class="n">2</span>Resolving 413 lender IDs to one institution each</h2>
+    <p>The lines-of-credit file names lenders by a top-holder RSSD, but the numeric IDs sit at inconsistent depths of the ownership tree, so a flat join loses most of them. The fix was tiered: match at holding-company level first, then at bank level, then walk subsidiaries up the <code>parent_id</code> chain until they land in the Y-9C, then check the leftovers against the NCUA credit-union roster.<sup><a href="#s1">1</a></sup></p>
+
+    <figure>
+      <p class="ft">Where the 413 numeric lender IDs ended up</p>
+      <p class="fs">Count of lenders by match tier. Source: <code>LOC_Matching_All.csv</code>.</p>
+      <div class="bars" role="img" aria-label="Bar chart: 242 matched at holding-company level, 15 at bank level as their own parent, 3 at subsidiary level walked up, 81 recovered via the credit-union roster, 72 unresolved.">
+        <div class="lab">Holding company (FR Y-9C)<small>direct match on RSSD</small></div><div class="track"><div class="bar" style="width:100%" title="242 lenders"></div></div><div class="val">242</div>
+        <div class="lab">Bank that is its own parent<small>Call Report, id = parent_id</small></div><div class="track"><div class="bar" style="width:6.2%" title="15 lenders"></div></div><div class="val">15</div>
+        <div class="lab">Subsidiary walked up the tree<small>find_highest_parent_id()</small></div><div class="track"><div class="bar" style="width:1.2%" title="3 lenders"></div></div><div class="val">3</div>
+        <div class="lab">Credit union<small>NCUA roster cross-check</small></div><div class="track"><div class="bar" style="width:33.5%" title="81 lenders"></div></div><div class="val">81</div>
+        <div class="lab">Unresolved<small>held out, listed for inspection</small></div><div class="track"><div class="bar off" style="width:29.8%" title="72 lenders"></div></div><div class="val">72</div>
+      </div>
+      <figcaption>The credit-union tier alone recovered 81 of 413 lenders (19.6%), cutting the unmatched set from 153 to 72. A further 666 rows carried non-numeric placeholders and were held out of this exercise.</figcaption>
+    </figure>
+
+    <p>Two more layers handled what tiered ID matching could not. Normalized fuzzy name matching (<code>token_sort_ratio ≥ 80</code>, after stripping punctuation and suffixes such as <em>corp</em>, <em>inc</em>, <em>ltd</em>) added matches against the Y-9C, the Call Report and the credit-union roster that no identifier could reach.<sup><a href="#s2">2</a></sup> Repeated self-joins of the NIC relationship file reached lead banks two and three levels down: of 134 holding companies in the credit file, 108 matched at the first level, 11 more at the second, 7 more at the third, and 8 stayed unresolved.<sup><a href="#s3">3</a></sup> Lenders whose RSSD changed in an acquisition were caught with the NIC predecessor → successor table.</p>
+
+    <pre><code># Walk a subsidiary up the parent_id chain until it lands in the FR Y-9C
+def find_highest_parent_id(subsidiary_id, call_df, fr_report):
+    def in_y9c(i):
+        return i in fr_report['parent_id'].values or i in fr_report['id'].values
+
+    current_id = subsidiary_id
+    if in_y9c(current_id):
+        return current_id
+    while True:
+        parent = call_df.loc[call_df['id'] == current_id, 'parent_id']
+        if parent.empty:
+            return None        # chain ends outside both filings
+        current_id = parent.values[0]
+        if in_y9c(current_id):
+            return current_id</code></pre>
+    <p class="cap">Condensed from <code>LOC_Analysis_ID_Matching/LOC_Analysis.ipynb</code>; the notebook version logs every hop.</p>
+
+    <h2><span class="n">3</span>Rolling the panel up and checking it against the filings</h2>
+    <p>Holding companies do not report every variable the study needed, so subsidiary Call Report financials were rolled up the NIC ownership tree to recover them. The first obstacle was a convention, not missing data: in the 2017Q4 Y-9C file, 4,302 of 4,597 filers list no parent at all, which orphans banks from their holding company until <code>parent_id</code> is backfilled with the filer's own ID.<sup><a href="#s4">4</a></sup> The first merge on <code>(parent_id, date)</code> returned nothing for a similar reason: a string-versus-float mismatch on the join keys.</p>
+    <p>Rolled-up totals were then compared against three independent versions of the same quantity: the Y-9C consolidated figure, the FDIC figure, and the Call Report figure. Rows where the ratio of bank deposits to aggregated subsidiary deposits fell outside [0.9, 1.0] were written out for manual inspection, and the survivors were spot-checked against nine 2022 10-K filings (Bank of America, JPMorgan, Wells Fargo, U.S. Bank, M&amp;T, SVB, TrustCo, Bank of Hawaii, Texas Capital). Five banks failed both the assets and the deposits check.<sup><a href="#s4">4</a></sup> The NY Fed CRSP–FRB link flagged 132 of the 413 lenders as publicly traded.<sup><a href="#s1">1</a></sup></p>
+
+    <h2><span class="n">4</span>Twelve years of HMDA across the 2018 reporting break</h2>
+    <p>HMDA changed its reporting standard in 2018: different column names, identifiers and codings. Before writing any filter, every column name for every year and file type was compiled into one table so the break was visible rather than discovered mid-merge.<sup><a href="#s5">5</a></sup></p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>2011–2017</th><th>2018–2023</th><th>Decision</th></tr></thead>
+        <tbody>
+          <tr><td>Lender key</td><td>Respondent ID + agency code</td><td>LEI; Tax ID only for 2021</td><td>Merge rule defined per era</td></tr>
+          <tr><td>Loan purpose</td><td>Includes home improvement (<code>= 2</code>)</td><td>Separate coding</td><td>Home-improvement loans dropped in both eras</td></tr>
+          <tr><td>Manufactured homes, second residences</td><td>Not reported</td><td>Reported</td><td>Recorded as a known limitation, not papered over</td></tr>
+          <tr><td>Race and ethnicity columns</td><td>Present</td><td>Present, different layout</td><td>Removed; not needed for the lender panel</td></tr>
+          <tr><td>Agency codes 7 and 9</td><td>Non-bank regulators</td><td>Same</td><td>Dropped so the panel stays bank-only</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The filtered records (single-family, site-built, first lien, principal residence, purchase or refinance, originated) were collapsed to lender × MSA × year, given a jumbo flag from the FHFA conforming limits (which vary by year and county), attached to a top-holder RSSD, and joined to the bank panel. Each filtered year prints the unique values of its six filter columns; that verification pass is how a missing 2015 file was caught before it silently shortened the panel.<sup><a href="#s5">5</a></sup></p>
+
+    <h2><span class="n">5</span>DealScan: can the data carry firm-time fixed effects?</h2>
+    <p>Before anyone wrote a regression, the syndicated-loan data was tested for whether it has enough time variation and lender heterogeneity to identify firm-time fixed effects at the tranche or the deal level.<sup><a href="#s6">6</a></sup></p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Feasibility check</th><th class="num">Tranche level</th><th class="num">Deal level</th></tr></thead>
+        <tbody>
+          <tr><td>Units with more than one bank</td><td class="num">85.8%</td><td class="num">85.5%</td></tr>
+          <tr><td>Units with more than one active date</td><td class="num">11.0%</td><td class="num">9.7%</td></tr>
+          <tr><td>Units with both</td><td class="num">10.5%</td><td class="num">9.4%</td></tr>
+          <tr><td>Firm-years with more than one bank</td><td class="num">88.0%</td><td class="num">88.0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">441 of 28,568 deals (1.54%) show more distinct tranche-active dates than deal-input dates. A tranche cannot change without its parent deal being updated, so this is a recording gap in the source, not lender behaviour; used naively it would inflate the apparent time variation the fixed effects rely on.</div>
+    <p class="note">DealScan is licensed through WRDS. The figures above are aggregate counts produced by the feasibility notebook.</p>
+
+    <h2><span class="n">6</span>Replicating Choi, Goldsmith-Pinkham and Yorulmazer (2023)</h2>
+    <p>To validate the deposit construction against a known benchmark, I reproduced <em>Contagion Effects of the Silicon Valley Bank Run</em> from the authors' R code, translating the data build into Python and regenerating Tables 1–6 and the figures (aggregate cumulative returns, 2022 and 2023 return densities, and the return-versus-vulnerability scatterplots). The Python FDIC deposit roll-up was diffed against the authors' R output file as the check that both pipelines agree.<sup><a href="#s7">7</a></sup></p>
+
+    <h2><span class="n">7</span>Three things that looked like missing data and were not</h2>
+    <ul class="tight">
+      <li><strong>Thousands of zero parent IDs</strong> in the Y-9C were a filing convention (a top holder lists no parent), not orphaned banks.</li>
+      <li><strong>The 2018 HMDA break</strong> was a naming and coding change; the two eras had to be aligned field by field before any filter was written.</li>
+      <li><strong>The 441 DealScan deals</strong> were a recording gap between two date fields, not real variation in lending.</li>
+    </ul>
+    <p>The recurring lesson across all four datasets: most of what looks like missing data is a representation problem, and the value of the work was telling the two apart.</p>
+
+    <section class="sources" id="sources">
+      <h2>Sources for the numbers on this page</h2>
+      <ol>
+        <li id="s1"><code>LOC_Analysis_ID_Matching/LOC_Matching_All.csv</code>: 413 rows, <code>Match_Type</code> = BHC 242 · Call_Parent 15 · Call_Subsidiary 3 · Credit Union 81 · No Match 72. Publicly traded: <code>LOC_Public_Traded_Merged_Matched_Rows.csv</code>, 132 rows.</li>
+        <li id="s2"><code>LOC_Analysis_Name_Matching/LOC_Analysis_Name_Matching_0710.ipynb</code>; result tables <code>LOC_BHC_FR_Name_Matching.csv</code>, <code>LOC_Call_Name_Matching.csv</code>, <code>LOC_Credit_Union_Name_Matching.csv</code>.</li>
+        <li id="s3">Ownership-walk counts from the pipeline notebook (<code>Raw_to_Processed_latest10_Twyla.ipynb</code>, working folder, not in the public repository).</li>
+        <li id="s4"><code>background/matching.ipynb</code> (parent-ID backfill, subsidiary counts checked against 10-Ks); <code>background/FR_Report.csv</code>: 4,597 rows, 4,302 with <code>parent_id = 0</code> (2017Q4); reconciliation exports and nine 10-K PDFs in the working folder.</li>
+        <li id="s5"><code>HMDA/column_names_summary.csv</code>; <code>HMDA/merged_panel_ts_files/</code> (13 yearly files, 2011–2023); <code>HMDA/report/Detailed Comparison of Relevant Columns.docx</code>; <code>HMDA/Verification of filtered data.docx</code>.</li>
+        <li id="s6"><code>DealScan/tranche _explore_full_data.ipynb</code>: the deal-count check is recorded in the notebook's summary (“Total deals analyzed: 28568 … Tranche_Active_Date count &gt; Deal_Input_Date count: 441 … 1.54%”), with the producing cell preserved in commented form; the licensed input file is not kept locally, so the figure is not regenerated on demand. Feasibility percentages are from the same notebook's saved output.</li>
+        <li id="s7"><code>replicate_choi_al/code/construct_data_twyla.ipynb</code> and <code>output/</code> (table1_y9c … table6_2022, fig1–fig3, scatterplots), working folder; publication of the code and output tables is planned, inputs stay private.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>© 2026 Xinxin Zhang · <a href="../index.html">Portfolio</a> · <a href="https://github.com/Twyla123/Bank-Distress-Research" target="_blank" rel="noopener">Repository</a></footer>
+</body>
+</html>
