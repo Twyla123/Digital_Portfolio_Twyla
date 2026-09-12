@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revenue Trends in Rural Hospitals, California 1995–2023 · Xinxin Zhang</title>
+  <meta name="description" content="Twenty-nine years of California hospital annual financial data: how rural hospitals came to depend on outpatient revenue and Disproportionate Share funding. Research with Prof. Glenn Melnick, USC." />
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    main { max-width: 760px; }
+    .eyebrow { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+    h1 { font-size: 34px; line-height: 1.2; letter-spacing: -.015em; margin: 0 0 18px; font-weight: 700; }
+    .dek { font-size: 19px; line-height: 1.5; color: var(--ink-2); margin: 0 0 26px; }
+    .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px 24px; padding: 18px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); font-size: 14px; margin: 0 0 30px; }
+    .meta dt { color: var(--muted); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 2px; }
+    .meta dd { margin: 0; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 0 0 10px; }
+    .stat { background: var(--surface); border: 1px solid var(--hairline); border-radius: 8px; padding: 16px; }
+    .stat .v { font-size: 28px; font-weight: 600; line-height: 1.1; letter-spacing: -.01em; }
+    .stat .v small { font-size: 15px; font-weight: 500; color: var(--ink-2); }
+    .stat .l { font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+    h2 { font-size: 22px; margin: 52px 0 12px; }
+    h2 .n { color: var(--muted); font-weight: 500; margin-right: 10px; }
+    p { margin: 0 0 16px; }
+    .note { font-size: 14px; color: var(--ink-2); }
+    figure { margin: 22px 0 10px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 8px; padding: 16px; }
+    figcaption { font-size: 13px; color: var(--muted); margin-top: 10px; }
+    .tbl-wrap { overflow-x: auto; margin: 18px 0 8px; }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    th, td { text-align: left; padding: 9px 12px 9px 0; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+    th { font-weight: 600; color: var(--ink-2); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; border-bottom: 1px solid var(--baseline); }
+    td.num, th.num { text-align: right; padding-right: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    pre { background: #f1f1ee; border: 1px solid var(--hairline); border-radius: 8px; padding: 14px 16px; overflow-x: auto; font: 13px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace; margin: 14px 0 6px; }
+    code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .92em; background: #f1f1ee; padding: 1px 5px; border-radius: 4px; }
+    pre code { background: none; padding: 0; }
+    .callout { border-left: 3px solid var(--accent); padding: 4px 0 4px 16px; margin: 20px 0; color: var(--ink-2); font-size: 15px; }
+    ul.tight { padding-left: 20px; margin: 0 0 16px; }
+    ul.tight li { margin-bottom: 8px; }
+    .sources { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--baseline); font-size: 13px; color: var(--ink-2); }
+    .sources h2 { font-size: 15px; margin: 0 0 10px; }
+    .sources ol { padding-left: 20px; margin: 0; }
+    .sources li { margin-bottom: 6px; }
+    .sources code { word-break: break-all; }
+    @media (max-width: 560px) { h1 { font-size: 27px; } .dek { font-size: 17px; } }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="top-inner">
+      <a class="home" href="../index.html">Xinxin Zhang</a>
+      <nav>
+        <a href="https://github.com/Twyla123/Rural-Hospitals-Project" target="_blank" rel="noopener">Code</a>
+        <a href="https://github.com/Twyla123" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/twyla-zhang" target="_blank" rel="noopener">LinkedIn</a>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <p class="eyebrow">Research · 2024 – 2025</p>
+    <h1>Revenue Trends in Rural Hospitals, California 1995–2023</h1>
+    <p class="dek">Twenty-nine years of state hospital financial filings, read as one question: what are California's rural hospitals actually living on now, and how many of them are left? The answer is outpatient revenue and Disproportionate Share funding, in a shrinking set of facilities.</p>
+
+    <dl class="meta">
+      <div><dt>Role</dt><dd>Research with Prof. Glenn Melnick, USC Sol Price School</dd></div>
+      <div><dt>Data</dt><dd>California HCAI hospital annual financial pivot tables, 1995–2023, all public</dd></div>
+      <div><dt>Tools</dt><dd>Python (pandas); the original analysis was done in Excel and has been rewritten as code</dd></div>
+      <div><dt>Code</dt><dd><a href="https://github.com/Twyla123/Rural-Hospitals-Project" target="_blank" rel="noopener">github.com/Twyla123/Rural-Hospitals-Project</a></dd></div>
+    </dl>
+
+    <div class="stats">
+      <div class="stat"><div class="v">43% → 68%</div><div class="l">outpatient share of gross patient revenue, rural hospitals, 1995 to 2023<sup>1</sup></div></div>
+      <div class="stat"><div class="v">79 → 58</div><div class="l">rural general acute hospitals filing<sup>1</sup></div></div>
+      <div class="stat"><div class="v">19% → 48%</div><div class="l">of them classified Disproportionate Share<sup>1</sup></div></div>
+      <div class="stat"><div class="v">12</div><div class="l">counties in 2023 whose only hospital is one rural hospital<sup>3</sup></div></div>
+    </div>
+
+    <h2><span class="n">1</span>The revenue shift</h2>
+    <p>Each hospital reports gross patient revenue split into inpatient and outpatient. Averaged across rural hospitals, the outpatient share rose from 43% in 1995 to 68% in 2023. Teaching and other general acute hospitals moved the same way but ended near 40%, so the gap widened rather than closed: rural hospitals are now the most outpatient-dependent group in the state.</p>
+    <figure>
+      <img src="../assets/rural_outpatient_trend.png" alt="Line chart: outpatient share of gross patient revenue 1995 to 2023. Rural hospitals rise from 43% to 68%; teaching and all other hospitals rise from about 27% to 40%." loading="lazy" />
+      <figcaption>Mean of <code>GR_OP_TOT / GR_PT_REV</code> across hospitals in each group and year. Produced by <code>code/build_panel.py</code>.</figcaption>
+    </figure>
+
+    <h2><span class="n">2</span>Fewer hospitals, and more of them on Disproportionate Share funding</h2>
+    <p>Over the same period the count of rural general acute hospitals filing fell from 79 to 58, while the share classified as Disproportionate Share Hospitals, the designation for facilities serving a high proportion of low-income patients, went from 19% to 48%. Those two lines together are the finding: the remaining hospitals lean more heavily on a funding stream meant for hospitals under exactly this kind of pressure.</p>
+    <figure>
+      <img src="../assets/rural_hospitals_and_dsh.png" alt="Two line charts: rural general acute hospitals filing falls from 79 in 1995 to 58 in 2023; the share of them classified DSH rises from 19% to 48%." loading="lazy" />
+      <figcaption>Counts of distinct facility numbers per year. Produced by <code>code/build_panel.py</code>; every figure is listed with its rule in <code>build_panel_output/headline_numbers.csv</code>.</figcaption>
+    </figure>
+
+    <h2><span class="n">3</span>Capacity and access, 2002 against 2023</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Between 2002 and 2023</th><th class="num">Rural</th><th class="num">Non-rural</th></tr></thead>
+        <tbody>
+          <tr><td>Hospitals</td><td class="num">−21%</td><td class="num">−9%</td></tr>
+          <tr><td>Licensed beds</td><td class="num">−21%</td><td class="num">−3%</td></tr>
+          <tr><td>Long-term care beds</td><td class="num">−24%</td><td class="num">−45%</td></tr>
+          <tr><td>Long-term care patient days</td><td class="num">−31%</td><td class="num">−41%</td></tr>
+          <tr><td>Long-term care average length of stay</td><td class="num">+73%</td><td class="num">+125%</td></tr>
+          <tr><td>Emergency visits</td><td class="num">+30%</td><td class="num">+43%</td></tr>
+          <tr><td>Clinic visits</td><td class="num">+151%</td><td class="num">+37%</td></tr>
+          <tr><td>Inpatient surgeries</td><td class="num">−65%</td><td class="num">−25%</td></tr>
+          <tr><td>Purchased inpatient days</td><td class="num">650 → 53,032</td><td class="num">+82%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">Read together: rural hospitals are doing far more clinic work, far less inpatient surgery, and buying inpatient days from elsewhere at a scale that did not exist in 2002. Fewer patients stay, and the ones who do stay longer.</div>
+    <p class="note">Comparable hospitals only, the HCAI classification that excludes Kaiser facilities, psychiatric health facilities, state hospitals and long-term-care-emphasis facilities. This is the universe the original Excel exhibits used; matching it was what made the rewritten code agree with them cell for cell.<sup><a href="#s2">2</a></sup></p>
+
+    <h2><span class="n">4</span>Where the closures land</h2>
+    <p>Of the 498 general acute hospitals that filed at some point between 1995 and 2023, 163 stopped filing before 2023, 29 of them rural. The wording matters: a merger, a changed facility number and a conversion to another care type all look identical in this data, so the output says <em>last year filed</em> rather than <em>closed</em>.</p>
+    <p>The access consequence is countable. In 2023, twelve California counties have exactly one hospital in the filings and it is a rural one: Amador, Calaveras, Colusa, Del Norte, Glenn, Kings, Lassen, Mariposa, Mono, San Benito, Trinity and Tuolumne.<sup><a href="#s3">3</a></sup></p>
+
+    <h2><span class="n">5</span>From a spreadsheet to a pipeline</h2>
+    <p>The original analysis was built in Excel, with the notebook covering only part of it. Three figures in the project README could not be produced by any cell that ran, and the 2023 outpatient share appeared as 67% in one summary table and 68.23% in the notebook's own output. Rewriting the analysis as code settled that: 68.2% is what the stated rule produces, and the README now follows the code.</p>
+    <pre><code>python code/build_panel.py        # 29 yearly files → panel + headline figures with their rules
+python code/exhibits.py           # the 2002 vs 2023 exhibits, previously hand-built in Excel
+python code/closures_and_hsa.py   # exits and outpatient growth by health service area</code></pre>
+    <p class="note">Each script writes a table of the figures it produces next to the rule that produces each one, so a number on this page can be traced to a line of code and a column of the source file. A second implementation written from the raw files, without reading these scripts, reproduced every headline figure.</p>
+
+    <h2><span class="n">6</span>What this data cannot tell you</h2>
+    <ul class="tight">
+      <li>A facility number disappearing is not proof of a closure.</li>
+      <li>Revenue here is <em>gross</em> patient revenue, charges rather than collections, so the outpatient share measures where the billing moved, not where the money ended up.</li>
+      <li>Rural status is HCAI's own classification, carried in the filing; it is not a geographic recalculation.</li>
+    </ul>
+
+    <section class="sources" id="sources">
+      <h2>Sources for the numbers on this page</h2>
+      <ol>
+        <li id="s1"><code>build_panel_output/headline_numbers.csv</code> — each figure with the rule that produces it; built from the HCAI files by <code>code/build_panel.py</code>.</li>
+        <li id="s2"><code>exhibits_output/capacity.csv</code>, <code>utilization.csv</code>, <code>length_of_stay.csv</code>, built by <code>code/exhibits.py</code>; they reproduce the hand-built workbook cell for cell.</li>
+        <li id="s3"><code>exhibits_output/headline_checks.csv</code> and <code>closures_hsa_output/last_year_filed.csv</code>, built by <code>code/exhibits.py</code> and <code>code/closures_and_hsa.py</code>.</li>
+        <li>Source data: California Department of Health Care Access and Information, <em>Hospital Annual Financial Data: Selected Data &amp; Pivot Tables</em>, one workbook per year, downloaded from the state open data portal. Listed in the repository's <code>data/README.md</code>.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>© 2026 Xinxin Zhang · <a href="../index.html">Portfolio</a> · <a href="https://github.com/Twyla123/Rural-Hospitals-Project" target="_blank" rel="noopener">Repository</a></footer>
+</body>
+</html>
