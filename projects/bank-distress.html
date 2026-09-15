@@ -64,7 +64,7 @@
       font-size: 14px;
     }
     .meta dt { color: var(--muted); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 2px; }
-    .meta dd { margin: 0; color: var(--ink); }
+    .meta dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
 
     /* Stat tiles */
     .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 30px 0 10px; }
@@ -158,13 +158,13 @@
   <main>
     <p class="eyebrow">Research · April 2024 – June 2025</p>
     <h1>Evaluating Bank Distress from Regulatory and Market Data</h1>
-    <p class="dek">Built part of the data layer for a study of whether brokered deposits make bank funding less stable, since published as <em>Beyond Hot Money</em> (Dagher and Fuster, 2026). My job was to take ten U.S. banking datasets that each name a bank differently, resolve them to one identity per institution, and produce a panel clean enough to regress on.</p>
+    <p class="dek">Built part of the data layer for a study of whether brokered deposits make bank funding less stable, since published as <em>Beyond Hot Money</em> (Dagher and Fuster, 2026). My job was to match banks across datasets that each name them differently and produce a panel clean enough to regress on.</p>
 
     <dl class="meta">
       <div><dt>Role</dt><dd>Research assistant to Prof. Jihad Dagher, Department of Economics, USC</dd></div>
       <div><dt>Tools</dt><dd>Python (pandas, fuzzywuzzy, statsmodels); read R and Stata pipelines</dd></div>
       <div><dt>Output feeds</dt><dd>Dagher &amp; Fuster (2026), SFI Research Paper 26-22. HMDA and DealScan work is a separate strand of the same project.</dd></div>
-      <div><dt>Code</dt><dd><a href="https://github.com/Twyla123/Bank-Distress-Research" target="_blank" rel="noopener">github.com/Twyla123/Bank-Distress-Research</a></dd></div>
+      <div><dt>Code</dt><dd><a href="https://github.com/Twyla123/Bank-Distress-Research" target="_blank" rel="noopener">github.com/Twyla123/<wbr>Bank-Distress-Research</a></dd></div>
     </dl>
 
     <div class="stats">
@@ -174,7 +174,7 @@
       <div class="stat"><div class="v">1.54<small>%</small></div><div class="l">of DealScan deals with a recording gap (441 of 28,568)<sup><a href="#s6">6</a></sup></div></div>
     </div>
 
-    <h2><span class="n">1</span>Ten sources, ten ways to name a bank</h2>
+    <h2><span class="n">1</span>Ten datasets, ten ways to name a bank</h2>
     <p>Every source identifies an institution with its own key, at its own level of the ownership tree. The work was deciding, pair by pair, what “the same bank” means, and making each decision auditable: every match carries a tier label, every ambiguous case is written out for inspection, every filter has a verification pass that prints what survived.</p>
     <div class="tbl-wrap">
       <table>
@@ -187,16 +187,15 @@
           <tr><td>NCUA credit-union call reports</td><td>CU number, RSSD</td><td>Credit-union assets and uninsured shares</td><td><span class="tag pub">Public</span></td></tr>
           <tr><td>NY Fed CRSP–FRB link</td><td>PERMCO ↔ RSSD</td><td>Which banks are publicly traded</td><td><span class="tag pub">Public</span></td></tr>
           <tr><td>HMDA (LAR, Transmittal Sheet, Panel)</td><td>Respondent ID, later LEI</td><td>Loan-level mortgage originations, 2011–2023</td><td><span class="tag pub">Public</span></td></tr>
-          <tr><td>SEC 10-K filings</td><td>Company name</td><td>Hand validation of constructed totals</td><td><span class="tag pub">Public</span></td></tr>
           <tr><td>CRSP / Compustat (WRDS)</td><td>PERMCO, ticker</td><td>Stock returns</td><td><span class="tag">Licensed</span></td></tr>
           <tr><td>Lines of credit</td><td>Top-holder RSSD</td><td>Lender credit limits, 2021–2023</td><td><span class="tag">Proprietary</span></td></tr>
           <tr><td>LPC DealScan</td><td>Lender-parent ID</td><td>Syndicated loans at deal and tranche level</td><td><span class="tag">Licensed</span></td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note">The last three sources are licensed or proprietary, reached through WRDS and the research group's own access. Every figure quoted on this page from those sources is an aggregate.</p>
+    <p class="note">SEC 10-K filings were used only to check the totals. The last three sources are licensed or proprietary, reached through WRDS and the research group's own access. Every figure quoted on this page from those sources is an aggregate.</p>
 
-    <h2><span class="n">2</span>Resolving 413 lender IDs to one institution each</h2>
+    <h2><span class="n">2</span>Matching 413 lender IDs: 341 resolved, 72 listed as unresolved</h2>
     <p>The lines-of-credit file names lenders by a top-holder RSSD, but the numeric IDs sit at inconsistent depths of the ownership tree, so a flat join loses most of them. The fix was tiered: match at holding-company level first, then at bank level, then walk subsidiaries up the <code>parent_id</code> chain until they land in the Y-9C, then check the leftovers against the NCUA credit-union roster.<sup><a href="#s1">1</a></sup></p>
 
     <figure>
@@ -233,10 +232,10 @@ def find_highest_parent_id(subsidiary_id, call_df, fr_report):
 
     <h2><span class="n">3</span>Rolling the panel up and checking it against the filings</h2>
     <p>Holding companies do not report every variable the study needed, so subsidiary Call Report financials were rolled up the NIC ownership tree to recover them. The first obstacle was a convention, not missing data: in the 2017Q4 Y-9C file, 4,302 of 4,597 filers list no parent at all, which orphans banks from their holding company until <code>parent_id</code> is backfilled with the filer's own ID.<sup><a href="#s4">4</a></sup> The first merge on <code>(parent_id, date)</code> returned nothing for a similar reason: a string-versus-float mismatch on the join keys.</p>
-    <p>Rolled-up totals were then compared against three independent versions of the same quantity: the Y-9C consolidated figure, the FDIC figure, and the Call Report figure. Rows where the ratio of bank deposits to aggregated subsidiary deposits fell outside [0.9, 1.0] were written out for manual inspection, and the survivors were spot-checked against nine 2022 10-K filings (Bank of America, JPMorgan, Wells Fargo, U.S. Bank, M&amp;T, SVB, TrustCo, Bank of Hawaii, Texas Capital). Five banks failed both the assets and the deposits check.<sup><a href="#s4">4</a></sup> The NY Fed CRSP–FRB link flagged 132 of the 413 lenders as publicly traded.<sup><a href="#s1">1</a></sup></p>
+    <p>Rolled-up totals were then compared against three independent versions of the same quantity: the Y-9C consolidated figure, the FDIC figure, and the Call Report figure. Rows where the ratio of bank deposits to aggregated subsidiary deposits fell outside [0.9, 1.0] were written out for manual inspection, and the survivors were spot-checked against nine 10-K filings (Bank of America, JPMorgan, Wells Fargo, U.S. Bank, M&amp;T, SVB, TrustCo, First Hawaiian, Texas Capital). Five banks failed both the assets and the deposits check.<sup><a href="#s4">4</a></sup> The NY Fed CRSP–FRB link flagged 130 of the 413 lenders as publicly traded.<sup><a href="#s1">1</a></sup></p>
 
     <h2><span class="n">4</span>Twelve years of HMDA across the 2018 reporting break</h2>
-    <p>HMDA changed its reporting standard in 2018: different column names, identifiers and codings. Before writing any filter, every column name for every year and file type was compiled into one table so the break was visible rather than discovered mid-merge.<sup><a href="#s5">5</a></sup></p>
+    <p>HMDA changed its reporting standard in 2018: different column names, identifiers and codings. Before writing any filter, every column name for every year and file type was compiled into one table so the break was visible rather than discovered mid-merge.<sup><a href="#s5">5</a></sup> The yearly merges run 2011–2023; the final panel covers 2012–2023.</p>
     <div class="tbl-wrap">
       <table>
         <thead><tr><th>Field</th><th>2011–2017</th><th>2018–2023</th><th>Decision</th></tr></thead>
@@ -245,7 +244,7 @@ def find_highest_parent_id(subsidiary_id, call_df, fr_report):
           <tr><td>Loan purpose</td><td>Includes home improvement (<code>= 2</code>)</td><td>Separate coding</td><td>Home-improvement loans dropped in both eras</td></tr>
           <tr><td>Manufactured homes, second residences</td><td>Not reported</td><td>Reported</td><td>Recorded as a known limitation, not papered over</td></tr>
           <tr><td>Race and ethnicity columns</td><td>Present</td><td>Present, different layout</td><td>Removed; not needed for the lender panel</td></tr>
-          <tr><td>Agency codes 7 and 9</td><td>Non-bank regulators</td><td>Same</td><td>Dropped so the panel stays bank-only</td></tr>
+          <tr><td>Agency codes 7 and 9</td><td>Reported</td><td>Reported</td><td>Dropped, per the project's filter rules</td></tr>
         </tbody>
       </table>
     </div>
@@ -264,11 +263,11 @@ def find_highest_parent_id(subsidiary_id, call_df, fr_report):
         </tbody>
       </table>
     </div>
-    <div class="callout">441 of 28,568 deals (1.54%) show more distinct tranche-active dates than deal-input dates. A tranche cannot change without its parent deal being updated, so this is a recording gap in the source, not lender behaviour; used naively it would inflate the apparent time variation the fixed effects rely on.</div>
+    <div class="callout">441 of 28,568 deals (1.54%) show more distinct tranche-active dates than deal-input dates. A tranche cannot change without its parent deal being updated, so this is a recording gap in the source, not lender behavior; used naively it would inflate the apparent time variation the fixed effects rely on.</div>
     <p class="note">DealScan is licensed through WRDS. The figures above are aggregate counts produced by the feasibility notebook.</p>
 
     <h2><span class="n">6</span>Replicating Choi, Goldsmith-Pinkham and Yorulmazer (2023)</h2>
-    <p>To validate the deposit construction against a known benchmark, I reproduced <em>Contagion Effects of the Silicon Valley Bank Run</em> from the authors' R code, translating the data build into Python and regenerating Tables 1–6 and the figures (aggregate cumulative returns, 2022 and 2023 return densities, and the return-versus-vulnerability scatterplots). The Python FDIC deposit roll-up was diffed against the authors' R output file as the check that both pipelines agree.<sup><a href="#s7">7</a></sup></p>
+    <p>To validate the deposit construction against a known benchmark, I reproduced <em>Contagion Effects of the Silicon Valley Bank Run</em> from the authors' R code, translating the data build into Python and regenerating Tables 1–6 and the figures (aggregate cumulative returns, 2022 and 2023 return densities, and the return-versus-vulnerability scatterplots). The Python FDIC deposit roll-up was diffed against the R pipeline's output as the check that both pipelines agree.<sup><a href="#s7">7</a></sup></p>
 
     <h2><span class="n">7</span>Three things that looked like missing data and were not</h2>
     <ul class="tight">
@@ -276,7 +275,7 @@ def find_highest_parent_id(subsidiary_id, call_df, fr_report):
       <li><strong>The 2018 HMDA break</strong> was a naming and coding change; the two eras had to be aligned field by field before any filter was written.</li>
       <li><strong>The 441 DealScan deals</strong> were a recording gap between two date fields, not real variation in lending.</li>
     </ul>
-    <p>The recurring lesson across all four datasets: most of what looks like missing data is a representation problem, and the value of the work was telling the two apart.</p>
+    <p>The recurring lesson: most of what looks like missing data is a representation problem, and the value of the work was telling the two apart.</p>
 
     <section class="sources" id="sources">
       <h2>Sources for the numbers on this page</h2>
@@ -284,9 +283,9 @@ def find_highest_parent_id(subsidiary_id, call_df, fr_report):
         <li id="s1"><code>LOC_Analysis_ID_Matching/LOC_Matching_All.csv</code>: 413 rows, <code>Match_Type</code> = BHC 242 · Call_Parent 15 · Call_Subsidiary 3 · Credit Union 81 · No Match 72. Publicly traded: <code>LOC_Public_Traded_Merged_Matched_Rows.csv</code>, 132 rows.</li>
         <li id="s2"><code>LOC_Analysis_Name_Matching/LOC_Analysis_Name_Matching_0710.ipynb</code>; result tables <code>LOC_BHC_FR_Name_Matching.csv</code>, <code>LOC_Call_Name_Matching.csv</code>, <code>LOC_Credit_Union_Name_Matching.csv</code>.</li>
         <li id="s3">Ownership-walk counts from the pipeline notebook (<code>Raw_to_Processed_latest10_Twyla.ipynb</code>, working folder, not in the public repository).</li>
-        <li id="s4"><code>background/matching.ipynb</code> (parent-ID backfill, subsidiary counts checked against 10-Ks); <code>background/FR_Report.csv</code>: 4,597 rows, 4,302 with <code>parent_id = 0</code> (2017Q4); reconciliation exports and nine 10-K PDFs in the working folder.</li>
+        <li id="s4"><code>background/matching.ipynb</code> (parent-ID backfill, subsidiary counts checked against 10-Ks); <code>background/FR_Report.csv</code>: 4,597 rows, 4,302 originally with <code>parent_id = 0</code>, saved after the backfill (2017Q4); reconciliation exports and nine 10-K PDFs in the working folder.</li>
         <li id="s5"><code>HMDA/column_names_summary.csv</code>; <code>HMDA/merged_panel_ts_files/</code> (13 yearly files, 2011–2023); <code>HMDA/report/Detailed Comparison of Relevant Columns.docx</code>; <code>HMDA/Verification of filtered data.docx</code>.</li>
-        <li id="s6"><code>DealScan/tranche _explore_full_data.ipynb</code>: the deal-count check is recorded in the notebook's summary (“Total deals analyzed: 28568 … Tranche_Active_Date count &gt; Deal_Input_Date count: 441 … 1.54%”), with the producing cell preserved in commented form; the licensed input file is not kept locally, so the figure is not regenerated on demand. Feasibility percentages are from the same notebook's saved output.</li>
+        <li id="s6"><code>DealScan/tranche _explore_full_data.ipynb</code>: the deal-count check is recorded in the notebook's summary (“Total deals analyzed: 28568 … Tranche_Active_Date count &gt; Deal_Input_Date count: 441 … 1.54%”), with the producing cell preserved in commented form; the licensed input file is not kept locally, so the figure is not regenerated on demand. Feasibility percentages come from the notebook's saved output, which was removed from the public repository with the licensed data.</li>
         <li id="s7"><code>replicate_choi_al/code/construct_data_twyla.ipynb</code> and <code>output/</code> (table1_y9c … table6_2022, fig1–fig3, scatterplots), working folder; publication of the code and output tables is planned, inputs stay private.</li>
       </ol>
     </section>

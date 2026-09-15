@@ -17,7 +17,7 @@
     .dek { font-size: 19px; line-height: 1.5; color: var(--ink-2); margin: 0 0 26px; }
     .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px 24px; padding: 18px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); font-size: 14px; margin: 0 0 30px; }
     .meta dt { color: var(--muted); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 2px; }
-    .meta dd { margin: 0; }
+    .meta dd { margin: 0; overflow-wrap: anywhere; }
     .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 0 0 10px; }
     .stat { background: var(--surface); border: 1px solid var(--hairline); border-radius: 8px; padding: 16px; }
     .stat .v { font-family: var(--serif); font-size: 31px; font-weight: 500; line-height: 1.08; letter-spacing: -.015em; }
@@ -61,15 +61,15 @@
   </div>
 
   <main>
-    <p class="eyebrow">Research · 2024 – 2025</p>
+    <p class="eyebrow">Research · 2024 – 2025 · follow-up September 2026</p>
     <h1>Revenue Trends in Rural Hospitals, California 1995–2023</h1>
     <p class="dek">Twenty-nine years of state hospital financial filings, read as one question: what are California's rural hospitals actually living on now, and how many of them are left? The answer is outpatient revenue and Disproportionate Share funding, in a shrinking set of facilities.</p>
 
     <dl class="meta">
       <div><dt>Role</dt><dd>Research with Prof. Glenn Melnick, USC Sol Price School</dd></div>
       <div><dt>Data</dt><dd>California HCAI hospital annual financial pivot tables, 1995–2023, all public</dd></div>
-      <div><dt>Tools</dt><dd>Python (pandas); the original analysis was done in Excel and has been rewritten as code</dd></div>
-      <div><dt>Code</dt><dd><a href="https://github.com/Twyla123/Rural-Hospitals-Project" target="_blank" rel="noopener">github.com/Twyla123/Rural-Hospitals-Project</a></dd></div>
+      <div><dt>Tools</dt><dd>Python and Excel, 2024–2025; rewritten as a Python pipeline, September 2026</dd></div>
+      <div><dt>Code</dt><dd><a href="https://github.com/Twyla123/Rural-Hospitals-Project" target="_blank" rel="noopener">github.com/Twyla123/<wbr>Rural-Hospitals-Project</a></dd></div>
     </dl>
 
     <div class="stats">
@@ -80,7 +80,7 @@
     </div>
 
     <h2><span class="n">1</span>The revenue shift</h2>
-    <p>Each hospital reports gross patient revenue split into inpatient and outpatient. Averaged across rural hospitals, the outpatient share rose from 43% in 1995 to 68% in 2023. Teaching and other general acute hospitals moved the same way but ended near 40%, so the gap widened rather than closed: rural hospitals are now the most outpatient-dependent group in the state.</p>
+    <p>Each hospital reports gross patient revenue split into inpatient and outpatient. Averaged across rural hospitals, the outpatient share rose from 43% in 1995 to 68% in 2023. Teaching and other general acute hospitals moved the same way but ended near 40%, so the gap widened rather than closed: rural hospitals were already the most outpatient-dependent group in 1995.</p>
     <figure>
       <img src="../assets/rural_outpatient_trend.png" alt="Line chart: outpatient share of gross patient revenue 1995 to 2023. Rural hospitals rise from 43% to 68%; teaching and all other hospitals rise from about 27% to 40%." loading="lazy" />
       <figcaption>Mean of <code>GR_OP_TOT / GR_PT_REV</code> across hospitals in each group and year. Produced by <code>code/build_panel.py</code>.</figcaption>
@@ -115,9 +115,9 @@
 
     <h2><span class="n">4</span>Where the closures land</h2>
     <p>Of the 498 general acute hospitals that filed at some point between 1995 and 2023, 163 stopped filing before 2023, 29 of them rural. The wording matters: a merger, a changed facility number and a conversion to another care type all look identical in this data, so the output says <em>last year filed</em> rather than <em>closed</em>.</p>
-    <p>The access consequence is countable. In 2023, twelve California counties have exactly one hospital in the filings and it is a rural one: Amador, Calaveras, Colusa, Del Norte, Glenn, Kings, Lassen, Mariposa, Mono, San Benito, Trinity and Tuolumne.<sup><a href="#s3">3</a></sup></p>
+    <p>Separately, some counties depend on a single rural hospital. In 2023, twelve California counties have exactly one hospital in the filings and it is a rural one: Amador, Calaveras, Colusa, Del Norte, Glenn, Kings, Lassen, Mariposa, Mono, San Benito, Trinity and Tuolumne.<sup><a href="#s3">3</a></sup> The count was also twelve in 2002.</p>
 
-    <h2><span class="n">5</span>From a spreadsheet to a pipeline</h2>
+    <h2><span class="n">5</span>Follow-up, September 2026: from a spreadsheet to a pipeline</h2>
     <p>The original analysis was built in Excel, with the notebook covering only part of it. Three figures in the project README could not be produced by any cell that ran, and the 2023 outpatient share appeared as 67% in one summary table and 68.23% in the notebook's own output. Rewriting the analysis as code settled that: 68.2% is what the stated rule produces, and the README now follows the code.</p>
     <pre><code>python code/build_panel.py        # 29 yearly files → panel + headline figures with their rules
 python code/exhibits.py           # the 2002 vs 2023 exhibits, previously hand-built in Excel

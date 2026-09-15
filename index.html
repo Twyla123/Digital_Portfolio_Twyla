@@ -69,7 +69,7 @@
             <h3>Evaluating Bank Distress from Regulatory and Market Data</h3>
             <dl class="pa">
               <div><dt>Question</dt><dd>Does a bank's funding structure predict distress? Part of the data layer for a study since published as <em>Beyond Hot Money</em> (Dagher and Fuster, 2026).</dd></div>
-              <div><dt>What I did</dt><dd>Resolved ten U.S. banking datasets that each name a bank differently to one identity per institution, rolled subsidiary financials up the ownership tree, and checked the totals against FDIC data and 10-K filings.</dd></div>
+              <div><dt>What I did</dt><dd>Matched institutions across U.S. banking datasets that each name a bank differently, rolled subsidiary financials up the ownership tree, and checked the totals against FDIC data and 10-K filings.</dd></div>
               <div><dt>Result</dt><dd>341 of 413 lender IDs matched (72 listed as unresolved rather than forced); 12 years of HMDA records aligned across the 2018 reporting break; a DealScan check that flagged 441 of 28,568 deals (1.54%) for a recording gap that would have overstated time variation.</dd></div>
             </dl>
             <p class="tags"><span>Entity resolution</span><span>Regulatory data</span><span>pandas</span><span>Data validation</span></p>
@@ -86,7 +86,7 @@
             <h3>Revenue Trends in Rural Hospitals, California, 1995–2023</h3>
             <dl class="pa">
               <div><dt>Question</dt><dd>How has the financial position of California's rural hospitals changed over three decades, and what are they living on now?</dd></div>
-              <div><dt>What I did</dt><dd>Built a 29-year panel (1995–2023) of general acute hospitals from the public HCAI annual financial files; one script rebuilds it and writes every headline figure with the rule that produces it.</dd></div>
+              <div><dt>What I did</dt><dd>Built a 29-year panel (1995–2023) of general acute hospitals from the public HCAI annual financial files, in Python and Excel. Follow-up, September 2026: the Excel analysis was rewritten as code, so one script rebuilds every headline figure.</dd></div>
               <div><dt>Result</dt><dd>Among rural hospitals the outpatient share of gross patient revenue rose from 43% to 68%, the count fell from 79 to 58, and the share classified as Disproportionate Share Hospitals rose from 19% to 48%.</dd></div>
             </dl>
             <p class="tags"><span>Public data</span><span>Longitudinal panel</span><span>Hospital finance</span><span>pandas</span></p>
@@ -110,7 +110,7 @@
             <dl class="pa">
               <div><dt>Question</dt><dd>Surveys are slow and expensive, and they under-cover small groups. Can a language model predict the <em>distribution</em> of answers a demographic group would give, closely enough to be useful before a survey is run?</dd></div>
               <div><dt>What I did</dt><dd>Built the inference and fine-tuning pipeline for Llama-3.1-8B and Qwen2.5-7B: answer-option token log-probabilities read in a single forward pass, normalized into a predicted distribution, then LoRA fine-tuned against the empirical distributions with soft-target cross-entropy. Ground truth is the 2022 NYC Citywide Mobility Survey, 23 questions across 17 demographic subgroups of age, gender, income, borough and race. Scored with total variation distance for nominal questions and Wasserstein distance for ordinal ones, against a random-guess baseline and a bootstrapped best-achievable floor.</dd></div>
-              <div><dt>Result</dt><dd>Across 18 configurations, three prompt formats by three training setups, the best reached 0.241 against 0.308 for a uniform guess on held-out questions. Pre-training on Pew data first made it worse than guessing (0.489 to 0.736), which is the more useful finding: borrowed survey data does not transfer here.</dd></div>
+              <div><dt>Result</dt><dd>Across two models, three prompt formats and three training setups (17 of 18 runs finished), the best reached 0.241 against 0.308 for a uniform guess on three held-out questions. Pre-training on Pew data first made every finished run worse than guessing (0.489 to 0.736). That stage also changed the demographic groups and prompt format, so the cause is still open.</dd></div>
               <div><dt>Code</dt><dd>Lab project, not public.</dd></div>
             </dl>
             <p class="tags"><span>LLM fine-tuning</span><span>LoRA</span><span>Survey methodology</span><span>Evaluation design</span></p>
@@ -129,7 +129,7 @@
             <p class="kicker">Honors thesis · USC Economics · May 2025 · Python</p>
             <h3>Wage Polarization and AI: Empirical Evidence from U.S. Labor Market Data</h3>
             <dl class="pa">
-              <div><dt>Question</dt><dd>Is AI exposure associated with higher wages, and does the gain reach lower-skill occupations?</dd></div>
+              <div><dt>Question</dt><dd>Is AI exposure associated with higher wages, and does the gain reach lower-skill occupations? AI exposure was measured with O*NET's Degree of Automation rating.</dd></div>
               <div><dt>What I did</dt><dd>Built a BLS–O*NET occupation panel for 2015–2024 and estimated the association with OLS, quantile regression and difference-in-differences, plus a descriptive look at gender, race and skill level. All sources public: BLS OEWS and CPS, O*NET, BLS CPI-U, Census SOC crosswalks.</dd></div>
               <div><dt>Status</dt><dd>Submitted May 2025 and kept as submitted. A 2026 revision with updated data and a revised design is in progress; its results will be posted here with a note on what changed.</dd></div>
             </dl>
@@ -148,7 +148,7 @@
           <li>
             <span class="role">Data Science Intern <span class="org">· System Two, New York</span></span>
             <span class="when">June – August 2026</span>
-            <span class="scope">Alternative data for investment research: subscriber and conversion modelling on an e-receipt panel, a per-ticker research pipeline, LLM-based storefront classification, dashboard consolidation.</span>
+            <span class="scope">Alternative data for investment research: subscriber and conversion modeling on an e-receipt panel, a per-ticker research pipeline, LLM-based storefront classification, dashboard consolidation.</span>
           </li>
           <li>
             <span class="role">Quantitative Research Intern <span class="org">· Ipsos, Shanghai</span></span>
@@ -158,7 +158,7 @@
           <li>
             <span class="role">Data Analytics Intern, Consumer Insights <span class="org">· Marc Point, Shanghai</span></span>
             <span class="when">June – August 2024</span>
-            <span class="scope">Consumer-review analytics: taxonomies over millions of reviews, cross-tabulation and trend analysis in SQL and FineBI.</span>
+            <span class="scope">Consumer-review analytics: project-specific taxonomies (4M+ reviews in the larger project), cross-tabulation and trend analysis in SQL and FineBI.</span>
           </li>
         </ul>
       </section>
